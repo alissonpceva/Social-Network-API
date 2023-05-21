@@ -1,34 +1,34 @@
-const { Schema, Types } = require('mongoose');
+// thought.js
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const assignmentSchema = new Schema(
-  {
-    assignmentId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
-    assignmentName: {
-      type: String,
-      required: true,
-      maxlength: 50,
-      minlength: 4,
-      default: 'Unnamed assignment',
-    },
-    score: {
-      type: Number,
-      required: true,
-      default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+const reactionSchema = new Schema({
+  // Define the fields for reactionSchema
+});
+
+const thoughtSchema = new Schema({
+  thoughtText: {
+    type: String,
+    required: true,
+    minlength: 1,
+    maxlength: 280
   },
-  {
-    toJSON: {
-      getters: true,
-    },
-    id: false,
-  }
-);
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    get: timestamp => new Date(timestamp).toISOString()
+  },
+  username: {
+    type: String,
+    required: true
+  },
+  reactions: [reactionSchema]
+});
 
-module.exports = assignmentSchema;
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+});
+
+const Thought = mongoose.model('Thought', thoughtSchema);
+
+module.exports = Thought;

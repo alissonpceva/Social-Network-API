@@ -5,6 +5,4 @@ connect('mongodb://localhost/socialNetwork', {
   useUnifiedTopology: true,
 });
 
-mongoose.set("debug", true);
-
 module.exports = connection;
